@@ -16,12 +16,11 @@ const Home = () => {
   const isLoading = useSelector((state: RootState) => state.showList.isLoading);
   const dispatch: AppDispatch = useDispatch();
 
-  console.log(showListData);
-
   useEffect(() => {
     if (location.pathname === '/shows/' + params.id) {
       const show = async () => {
         await dispatch(showInfo({value: params.id}));
+
       };
 
       void show();
@@ -29,13 +28,13 @@ const Home = () => {
   }, [dispatch, location.pathname, params.id]);
 
   const changeInput = async (event: React.ChangeEvent<HTMLInputElement>) => {
-    const { value } = event.target;
+    const {value} = event.target;
 
     dispatch(valueInfo(value));
     await dispatch(showList({value}));
   };
 
-  let content = ( isLoading ? <Loader /> :
+  let content = (
     <div className="row">
       <h3 className="col-5">Search for TV show</h3>
       <div className="col-7">
@@ -73,16 +72,19 @@ const Home = () => {
           {image}
         </div>
         <div className="col-7">
-          <input className="w-75" value={showValue} onChange={changeInput} />
-          {showListData.map((item) => (
+          <input className="w-75" value = {location.pathname === '/shows/' + params.id ? seriesData.name : showValue}  onChange={changeInput} />
+          {showValue === seriesData.name ? showListData.map((item) => (
             <div key={item.show.id}>
               <div className="border border-dark mt-2 mb-2 ms-auto me-auto p-1 w-75">
                 <Link to={"/shows/" + item.show.id} className="text-dark">{item.show.name}</Link>
               </div>
             </div>
-          ))}
-          <h3>{seriesData.name}</h3>
-          {seriesData.summary}
+          )) : <div>
+            <h3>{seriesData.name}</h3>
+            {seriesData.summary}
+          </div>
+          }
+
         </div>
       </div>
     );
